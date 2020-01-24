@@ -12,7 +12,6 @@
       "type": "string",
       "defaultValue": "Consumption",
       "allowedValues": [
-        "ServicePlan",
         "Consumption"
       ],
       "metadata": {
