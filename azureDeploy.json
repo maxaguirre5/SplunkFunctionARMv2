@@ -1,147 +1,147 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "appName": {
-            "type": "string",
-            "metadata": {
-                "description": "The name of the function app that you wish to create."
-            }
-        },
-        "appServicePlanType" : {
-            "type": "string",
-            "defaultValue": "Consumption",
-            "allowedValues": [
-                "ServicePlan",
-                "Consumption"
-            ],
-            "metadata": {
-                "description": "The ServicePlan option creates an App Service Plan and is billed according to that plan. The Consumption option bills according to https://azure.microsoft.com/en-gb/pricing/details/functions/."
-            }
-        },        
-        "appInsightsLocation": {
-            "type": "string",
-            "defaultValue": "South Central US",
-            "allowedValues": [
-                "Australia East",
-                "Canada Central",
-                "Central India",
-                "East US",
-                "France Central",
-                "Japan East",
-                "Korea Central",
-                "North Europe",
-                "South Central US",
-                "Southeast Asia",
-                "UK South",
-                "UK West",
-                "West Europe",
-                "West US 2"
-            ]
-        },
-        "appInsightsName": {
-            "type": "string",
-            "defaultValue": "appInsightsInstance"
-        },
-        "githubRepoURL": {
-            "type": "string",
-            "defaultValue": "https://github.com/villanub/ASCSplunkFunctionV2.git"
-        },
-        "githubRepoBranch": {
-            "type": "string",
-            "defaultValue": "master"
-        },
-        "eventHubConnectionString": {
-            "type": "string",
-            "defaultValue": "Endpoint=sb://YOURNAMESPACE.servicebus.windows.net/;SharedAccessKeyName=YOURPOLICYNAME;SharedAccessKey=YOURPOLICYKEY"
-        },
-        "inputHubNameActivityLogs": {
-            "type": "string",
-            "defaultValue": "insights-operational-logs"
-        },
-        "consumerGroupNameActivityLog": {
-            "type": "string",
-            "defaultValue": "$default"
-        },
-        "inputHubNameDiagnosticLogs": {
-            "type": "string",
-            "defaultValue": "insights-logs-diagnostics"
-        },
-        "inputHubNameSecurityLogs": {
-            "type": "string",
-            "defaultValue": "security"
-        },
-        "consumerGroupNameSecurityLog": {
-            "type": "string",
-            "defaultValue": "security"
-        },
-        "consumerGroupNameDiagnosticLogs": {
-            "type": "string",
-            "defaultValue": "$default"
-        },
-        "inputHubNameMetrics": {
-            "type": "string",
-            "defaultValue": "insights-metrics-pt1m"
-        },
-        "consumerGroupNameMetrics": {
-            "type": "string",
-            "defaultValue": "$default"
-        },
-        "inputHubNameWAD": {
-            "type": "string",
-            "defaultValue": "insights-telemetry-wad"
-        },
-        "consumerGroupNameWAD": {
-            "type": "string",
-            "defaultValue": "$default"
-        },
-        "inputHubNameLAD": {
-            "type": "string",
-            "defaultValue": "insights-telemetry-lad"
-        },
-        "consumerGroupNameLAD": {
-            "type": "string",
-            "defaultValue": "$default"
-        },
-        "inputHubNameFaults": {
-            "type": "string",
-            "defaultValue": "transmission-faults"
-        },
-        "splunkToken": {
-            "type": "string"
-        },
-        "splunkAddress": {
-            "type": "string"
-        },
-        "splunkCertThumbprint": {
-            "type": "string",
-            "defaultValue": ""
-        },
-        "outputBinding": {
-            "type": "string",
-            "defaultValue": "hec",
-            "metadata": {
-                "description": "values are hec, proxy, eventhub"
-            }
-        },
-        "outputHubConnection": {
-            "type": "string",
-            "defaultValue" :"Endpoint=sb://YOURNAMESPACE.servicebus.windows.net/;SharedAccessKeyName=YOURPOLICYNAME;SharedAccessKey=YOURPOLICYKEY",
-            "metadata": {
-                "description": "Only used with outputBinding = eventhub, but must be a valid connection string."
-            }
-        },
-        "output-hub-name-proxy": {
-            "type": "string",
-            "defaultValue": "collector-to-proxy"
-        }
+  "parameters": {
+    "appName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the function app that you wish to create."
+      }
     },
+    "appServicePlanType": {
+      "type": "string",
+      "defaultValue": "Consumption",
+      "allowedValues": [
+        "ServicePlan",
+        "Consumption"
+      ],
+      "metadata": {
+        "description": "The ServicePlan option creates an App Service Plan and is billed according to that plan. The Consumption option bills according to https://azure.microsoft.com/en-gb/pricing/details/functions/."
+      }
+    },
+    "appInsightsLocation": {
+      "type": "string",
+      "defaultValue": "South Central US",
+      "allowedValues": [
+        "Australia East",
+        "Canada Central",
+        "Central India",
+        "East US",
+        "France Central",
+        "Japan East",
+        "Korea Central",
+        "North Europe",
+        "South Central US",
+        "Southeast Asia",
+        "UK South",
+        "UK West",
+        "West Europe",
+        "West US 2"
+      ]
+    },
+    "appInsightsName": {
+      "type": "string",
+      "defaultValue": "appInsightsInstance"
+    },
+    "githubRepoURL": {
+      "type": "string",
+      "defaultValue": "https://github.com/villanub/ASCSplunkFunctionV2.git"
+    },
+    "githubRepoBranch": {
+      "type": "string",
+      "defaultValue": "master"
+    },
+    "eventHubConnectionString": {
+      "type": "string",
+      "defaultValue": "Endpoint=sb://YOURNAMESPACE.servicebus.windows.net/;SharedAccessKeyName=YOURPOLICYNAME;SharedAccessKey=YOURPOLICYKEY"
+    },
+    "inputHubNameActivityLogs": {
+      "type": "string",
+      "defaultValue": "insights-operational-logs"
+    },
+    "consumerGroupNameActivityLog": {
+      "type": "string",
+      "defaultValue": "$default"
+    },
+    "inputHubNameDiagnosticLogs": {
+      "type": "string",
+      "defaultValue": "insights-logs-diagnostics"
+    },
+    "inputHubNameSecurityLogs": {
+      "type": "string",
+      "defaultValue": "security"
+    },
+    "consumerGroupNameSecurityLog": {
+      "type": "string",
+      "defaultValue": "security"
+    },
+    "consumerGroupNameDiagnosticLogs": {
+      "type": "string",
+      "defaultValue": "$default"
+    },
+    "inputHubNameMetrics": {
+      "type": "string",
+      "defaultValue": "insights-metrics-pt1m"
+    },
+    "consumerGroupNameMetrics": {
+      "type": "string",
+      "defaultValue": "$default"
+    },
+    "inputHubNameWAD": {
+      "type": "string",
+      "defaultValue": "insights-telemetry-wad"
+    },
+    "consumerGroupNameWAD": {
+      "type": "string",
+      "defaultValue": "$default"
+    },
+    "inputHubNameLAD": {
+      "defaultValue": "insights-telemetry-lad",
+      "type": "string"
+    },
+    "consumerGroupNameLAD": {
+      "type": "string",
+      "defaultValue": "$default"
+    },
+    "inputHubNameFaults": {
+      "type": "string",
+      "defaultValue": "transmission-faults"
+    },
+    "splunkToken": {
+      "type": "string"
+    },
+    "splunkAddress": {
+      "type": "string"
+    },
+    "splunkCertThumbprint": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "outputBinding": {
+      "type": "string",
+      "defaultValue": "hec",
+      "metadata": {
+        "description": "values are hec, proxy, eventhub"
+      }
+    },
+    "outputHubConnection": {
+      "type": "string",
+      "defaultValue": "Endpoint=sb://YOURNAMESPACE.servicebus.windows.net/;SharedAccessKeyName=YOURPOLICYNAME;SharedAccessKey=YOURPOLICYKEY",
+      "metadata": {
+        "description": "Only used with outputBinding = eventhub, but must be a valid connection string."
+      }
+    },
+    "output-hub-name-proxy": {
+      "type": "string",
+      "defaultValue": "collector-to-proxy"
+    }
+  },
     "variables": {
         "functionAppName": "[parameters('appName')]",
         "ConsumptionName": "[concat('cn-', parameters('appName'))]",
         "hostingPlanName": "[variables(concat(parameters('appServicePlanType'), 'Name'))]",
         "storageAccountName": "[concat('func', uniquestring(resourceGroup().id))]",
-        "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+      "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
     },
     "resources": [
         {
@@ -152,7 +152,7 @@
             "kind": "StorageV2",
             "sku": {
                 "name": "Standard_LRS"
-            },
+            }
         },
         {
             "name": "[parameters('appInsightsName')]",
@@ -192,8 +192,7 @@
             "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
                 "siteConfig": {
-                    "alwaysOn": "[variables('alwaysOnAvailable')]",
-                    "appSettings": [
+                     "appSettings": [
                         {
                             "name": "AzureWebJobsDashboard",
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
