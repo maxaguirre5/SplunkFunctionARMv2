@@ -18,10 +18,10 @@
             "value": "insights-operational-logs"
         },
         "inputHubNameDiagnosticsLogs": {
-            "value": "my-hub-name-for-diagnostics-logs"
+            "value": "diagnostics-logs"
         },
         "inputHubNameMetrics": {
-            "value": "my-hub-name-for-metrics"
+            "value": "metrics"
         },
         "inputHubNameWAD": {
             "value": "insights-telemetry-wad"
