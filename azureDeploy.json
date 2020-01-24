@@ -137,17 +137,6 @@
         }
     },
     "variables": {
-        "alwaysOnAvail0": "[equals(parameters('appServicePlanType'),'ServicePlan')]",
-        "alwaysOnAvail1": "[equals(parameters('appServicePlanTier'),'Standard')]",
-        "alwaysOnAvail2": "[equals(parameters('appServicePlanTier'),'Basic')]",
-        "alwaysOnAvail3": "[equals(parameters('appServicePlanTier'),'Premium')]",
-        "alwaysOnAvail4": "[equals(parameters('appServicePlanTier'),'Isolated')]",
-        "alwaysOnAvaila": "[or(variables('alwaysOnAvail1'), variables('alwaysOnAvail2'))]",
-        "alwaysOnAvailb": "[or(variables('alwaysOnAvail3'), variables('alwaysOnAvail4'))]",
-        "alwaysOnAvailc": "[or(variables('alwaysOnAvaila'), variables('alwaysOnAvailb'))]",
-
-        "alwaysOnAvailable": "[and(variables('alwaysOnAvail0'), variables('alwaysOnAvailc'))]",
-
         "functionAppName": "[parameters('appName')]",
         "ConsumptionName": "[concat('cn-', parameters('appName'))]",
         "hostingPlanName": "[variables(concat(parameters('appServicePlanType'), 'Name'))]",
