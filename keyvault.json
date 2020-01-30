@@ -36,7 +36,7 @@
         }
     },
     "variables": {
-        "vaults_name": "[concat(parameters('cns_vaults_name'), uniquestring(resourceGroup().id))]"
+        "vaults_name": "[concat('kv-', parameters('cns_vaults_name'))]"
     },
     "resources": [
         {
