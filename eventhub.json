@@ -7,21 +7,22 @@
             "type": "String"
         },
         "resourceTags": {
-       "type": "object",
-       "defaultValue": {
-           "Group": "Rackspace",
-           "Rackspace-Service": "CNS"
-       }
-   }
+            "type": "object",
+            "defaultValue": {
+                "Group": "Rackspace",
+                "Rackspace-Service": "CNS"
+            }
+        }
     },
-    "variables": {},
+    "variables": {
+    },
     "resources": [
         {
             "type": "Microsoft.EventHub/namespaces",
             "apiVersion": "2018-01-01-preview",
             "name": "[parameters('eventhub_namspace')]",
             "location": "[resourceGroup().location]",
-            "tags": "[parameters('resourceTags')]", 
+            "tags": "[parameters('resourceTags')]",
             "sku": {
                 "name": "Standard",
                 "tier": "Standard",
@@ -74,8 +75,10 @@
             ],
             "properties": {
                 "defaultAction": "Deny",
-                "virtualNetworkRules": [],
-                "ipRules": []
+                "virtualNetworkRules": [
+                ],
+                "ipRules": [
+                ]
             }
         },
         {
@@ -134,7 +137,8 @@
                 "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventhub_namspace'), 'security')]",
                 "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
             ],
-            "properties": {}
+            "properties": {
+            }
         },
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
@@ -145,7 +149,8 @@
                 "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventhub_namspace'), 'security')]",
                 "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
             ],
-            "properties": {}
+            "properties": {
+            }
         },
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
@@ -156,7 +161,8 @@
                 "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventhub_namspace'), 'security')]",
                 "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
             ],
-            "properties": {}
+            "properties": {
+            }
         }
     ]
 }

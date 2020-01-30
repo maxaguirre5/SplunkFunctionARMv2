@@ -7,32 +7,32 @@
             "type": "String"
         },
         "appname": {
-            "type":"string"
+            "type": "string"
         },
-        "RaxConnectionString":{
+        "RaxConnectionString": {
             "defaultValue": "ADD EVENTHUB PRIMARY KEY HERE",
-            "type":"string"
+            "type": "string"
         },
-        "MSCLOUD_SPN_ID":{
-            "type":"string"
+        "MSCLOUD_SPN_ID": {
+            "type": "string"
         },
-        "CONTRIBUTOR_ID":{
-            "type":"string"
+        "CONTRIBUTOR_ID": {
+            "type": "string"
         },
-        "RaxToken":{
+        "RaxToken": {
             "defaultValue": "ADD SPLUNK TOKEN HERE",
-            "type":"string"
+            "type": "string"
         },
-        "RaxWeb":{
+        "RaxWeb": {
             "defaultValue": "ADD SPLUNK HEC URL HERE",
-            "type":"string"
+            "type": "string"
         },
         "resourceTags": {
-       "type": "object",
-       "defaultValue": {
-           "Group": "Rackspace",
-           "Rackspace-Service": "CNS"
-       }
+            "type": "object",
+            "defaultValue": {
+                "Group": "Rackspace",
+                "Rackspace-Service": "CNS"
+            }
         }
     },
     "variables": {
@@ -44,7 +44,7 @@
             "apiVersion": "2016-10-01",
             "name": "[variables('vaults_name')]",
             "location": "[resourceGroup().location]",
-            "tags": "[parameters('resourceTags')]", 
+            "tags": "[parameters('resourceTags')]",
             "properties": {
                 "sku": {
                     "family": "A",
@@ -76,8 +76,10 @@
                                 "backup",
                                 "restore"
                             ],
-                            "certificates": [],
-                            "storage": []
+                            "certificates": [
+                            ],
+                            "storage": [
+                            ]
                         }
                     },
                     {
@@ -104,8 +106,10 @@
                                 "backup",
                                 "restore"
                             ],
-                            "certificates": [],
-                            "storage": []
+                            "certificates": [
+                            ],
+                            "storage": [
+                            ]
                         }
                     },
                     {
@@ -118,8 +122,10 @@
                             "secrets": [
                                 "get"
                             ],
-                            "certificates": [],
-                            "storage": []
+                            "certificates": [
+                            ],
+                            "storage": [
+                            ]
                         }
                     }
                 ],
@@ -138,7 +144,7 @@
             ],
             "properties": {
                 "contentType": "ConnectionString",
-                "value" : "[parameters('RaxConnectionString')]",
+                "value": "[parameters('RaxConnectionString')]",
                 "attributes": {
                     "enabled": true
                 }
@@ -154,7 +160,7 @@
             ],
             "properties": {
                 "contentType": "Token",
-                "value" : "[parameters('RaxToken')]",
+                "value": "[parameters('RaxToken')]",
                 "attributes": {
                     "enabled": true
                 }
@@ -170,7 +176,7 @@
             ],
             "properties": {
                 "contentType": "URL",
-                "value" : "[parameters('RaxWeb')]",
+                "value": "[parameters('RaxWeb')]",
                 "attributes": {
                     "enabled": true
                 }
