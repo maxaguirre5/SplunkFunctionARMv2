@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "eventhub_namespace": {
-            "defaultValue": "CNSEvHub",
+            "defaultValue": "eventhub",
             "type": "String"
         },
         "resourceTags": {
@@ -15,7 +15,7 @@
         }
     },
     "variables": {
-        "namespace": "[concat(parameters('eventhub_namespace'), uniquestring(resourceGroup().id))]",
+        "namespace": "[parameters('eventhub_namespace')]",
         "eventHubSendRuleId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('namespace'),'security', 'Rackspace')]"
     },
     "resources": [
