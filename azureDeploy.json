@@ -4,16 +4,17 @@
   "parameters": {
     "appName": {
       "type": "string",
+      "defaultValue": "cns",
       "metadata": {
         "description": "The name of the function app that you wish to create."
       }
     },
-    "eventhub_namespace": {
-      "defaultValue": "Hub",
+    "eventhubNamespace": {
+      "defaultValue": "eventhub",
       "type": "String"
     },
-    "cns_vaults_name": {
-      "defaultValue": "vault",
+    "keyvaultName": {
+      "defaultValue": "keyvault",
       "type": "String"
     },
     "MSCLOUD_SPN_ID": {
@@ -67,12 +68,12 @@
     }
   },
   "variables": {
-    "functionAppName": "[parameters('appName')]",
-    "ConsumptionName": "[concat('cn-', parameters('appName'))]",
+    "functionAppName": "[concat(parameters('appName'), uniqueString(resourceGroup().id))]",
+    "ConsumptionName": "[concat('plan-', parameters('appName'))]",
     "hostingPlanName": "[variables(concat('Consumption', 'Name'))]",
     "storageAccountName": "[concat('func', uniquestring(resourceGroup().id))]",
-    "hubnamespace": "[concat(parameters('eventhub_namespace'), uniquestring(resourceGroup().id)) ]",
-    "vaultname": "[concat(parameters('cns_vaults_name'), uniquestring(resourceGroup().id)) ]",
+    "hubnamespace": "[concat(parameters('eventhubNamespace'), uniquestring(resourceGroup().id)) ]",
+    "vaultname": "[concat(parameters('keyvaultName'), uniquestring(resourceGroup().id)) ]",
     "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
     "githubRepoURL": "https://github.com/villanub/ASCSplunkFunctionV2.git",
     "githubRepoBranch": "master",
