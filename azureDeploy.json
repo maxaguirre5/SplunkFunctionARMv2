@@ -40,7 +40,7 @@
     },
     "appInsightsName": {
       "type": "string",
-      "defaultValue": "appInsightsInstance"
+      "defaultValue": "rax-cnsappInsights"
     },
     "githubRepoURL": {
       "type": "string",
@@ -133,7 +133,14 @@
     "output-hub-name-proxy": {
       "type": "string",
       "defaultValue": "collector-to-proxy"
-    }
+    },
+     "resourceTags": {
+       "type": "object",
+       "defaultValue": {
+           "Group": "Rackspace",
+           "Rackspace-Service": "CNS"
+       }
+   }
   },
     "variables": {
         "functionAppName": "[parameters('appName')]",
@@ -148,16 +155,22 @@
             "name": "[variables('storageAccountName')]",
             "apiVersion": "2018-07-01",
             "location": "[resourceGroup().location]",
+            "tags": "[parameters('resourceTags')]", 
             "kind": "StorageV2",
             "sku": {
                 "name": "Standard_LRS"
-            }
+            },
+            "dependsOn": [
+                "eventhub",
+                "keyvault"
+            ]
         },
         {
             "name": "[parameters('appInsightsName')]",
             "type": "Microsoft.Insights/components",
             "apiVersion": "2015-05-01",
             "location": "[parameters('appInsightsLocation')]",
+            "tags": "[parameters('resourceTags')]", 
             "kind": "web",
             "properties": {
                 "Application_Type": "web",
@@ -168,28 +181,40 @@
         {
             "condition": "[equals(parameters('appServicePlanType'), 'Consumption')]",
             "type": "Microsoft.Web/serverfarms",
-            "apiVersion": "2015-04-01",
+            "apiVersion": "2016-09-01",
             "name": "[variables('ConsumptionName')]",
             "location": "[resourceGroup().location]",
+            "tags": "[parameters('resourceTags')]", 
             "properties": {
                 "name": "[variables('ConsumptionName')]",
-                "computeMode": "Dynamic",
-                "sku": "Dynamic"
+                "computeMode": "Dynamic"
+            },
+                "sku":{
+                      "name":"Y1",
+                      "tier":"Dynamic",
+                      "size":"Y1",
+                      "family":"Y",
+                      "capacity":0
             }
         },
         {
-            "apiVersion": "2016-08-01",
+            "apiVersion": "2018-11-01",
             "type": "Microsoft.Web/sites",
             "name": "[variables('functionAppName')]",
             "location": "[resourceGroup().location]",
+            "tags": "[parameters('resourceTags')]", 
             "kind": "functionapp",
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
                 "[resourceId('Microsoft.Insights/components', parameters('appInsightsName'))]"
             ],
+             "identity": {
+             "type": "SystemAssigned"
+            },
             "properties": {
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+                "httpsOnly": true,
                 "siteConfig": {
                      "appSettings": [
                         {
@@ -205,6 +230,10 @@
                             "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccountName'), ';AccountKey=', listKeys(variables('storageAccountid'),'2015-05-01-preview').key1)]"
                         },
                         {
+                            "name": "WEBSITE_ENABLE_SYNC_UPDATE_SITE",
+                            "value": "true"
+                        },
+                        {
                             "name": "WEBSITE_CONTENTSHARE",
                             "value": "[toLower(variables('functionAppName'))]"
                         },
@@ -214,7 +243,7 @@
                         },
                         {
                             "name": "WEBSITE_NODE_DEFAULT_VERSION",
-                            "value": "6.5.0"
+                            "value": "~10"
                         },
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
@@ -305,7 +334,7 @@
             },
             "resources": [
                 {
-                    "apiVersion": "2016-08-01",
+                    "apiVersion": "2018-11-01",
                     "name": "web",
                     "type": "sourcecontrols",
                     "dependsOn": [
@@ -318,6 +347,36 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-05-01",
+            "name": "eventhub",
+            "properties": {
+            "mode": "Incremental",
+            "templateLink": {
+            "uri": "[uri(deployment().properties.templateLink.uri, 'eventhub.json')]",
+            "contentVersion": "1.0.0.0"
+                  }
+              }
+        },
+                {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2018-05-01",
+            "name": "keyvault",
+            "properties": {
+            "mode": "Incremental",
+            "templateLink": {
+            "uri": "[uri(deployment().properties.templateLink.uri, 'keyvault.json')]",
+            "contentVersion": "1.0.0.0"
+                  }
+              }
         }
-    ]
+    ],
+        "outputs": {
+        "principalId": {
+          "type": "string",
+          "value": "[reference(resourceId('Microsoft.Web/sites', parameters('appName')), '2018-11-01', 'Full').identity.principalId]"
+        }
+    }
 }

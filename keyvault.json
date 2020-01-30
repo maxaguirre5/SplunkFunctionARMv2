@@ -1,0 +1,174 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vaults_name": {
+            "type": "String"
+        },
+        "appname": {
+            "type":"string"
+        },
+        "RaxConnectionString":{
+            "type":"string"
+        },
+        "MSCLOUD_SPN_ID":{
+            "type":"string"
+        },
+        "CONTRIBUTOR_ID":{
+            "type":"string"
+        },
+        "RaxToken":{
+            "type":"string"
+        },
+        "RaxWeb":{
+            "type":"string"
+        },
+        "resourceTags": {
+       "type": "object",
+       "defaultValue": {
+           "Group": "Rackspace",
+           "Rackspace-Service": "CNS"
+       }
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2016-10-01",
+            "name": "[parameters('vaults_name')]",
+            "location": "[resourceGroup().location]",
+            "tags": "[parameters('resourceTags')]", 
+            "properties": {
+                "sku": {
+                    "family": "A",
+                    "name": "standard"
+                },
+                "tenantId": "[subscription().tenantId]",
+                "accessPolicies": [
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "[parameters('MSCLOUD_SPN_ID')]",
+                        "permissions": {
+                            "keys": [
+                                "get",
+                                "list",
+                                "update",
+                                "create",
+                                "import",
+                                "delete",
+                                "recover",
+                                "backup",
+                                "restore"
+                            ],
+                            "secrets": [
+                                "get",
+                                "list",
+                                "set",
+                                "delete",
+                                "recover",
+                                "backup",
+                                "restore"
+                            ],
+                            "certificates": [],
+                            "storage": []
+                        }
+                    },
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "[parameters('CONTRIBUTOR_ID')]",
+                        "permissions": {
+                            "keys": [
+                                "get",
+                                "list",
+                                "update",
+                                "create",
+                                "import",
+                                "delete",
+                                "recover",
+                                "backup",
+                                "restore"
+                            ],
+                            "secrets": [
+                                "get",
+                                "list",
+                                "set",
+                                "delete",
+                                "recover",
+                                "backup",
+                                "restore"
+                            ],
+                            "certificates": [],
+                            "storage": []
+                        }
+                    },
+                    {
+                        "tenantId": "[subscription().tenantId]",
+                        "objectId": "[reference(concat('Microsoft.Web/sites/', parameters('appName')), '2018-11-01', 'Full').identity.principalId]",
+                        "permissions": {
+                            "keys": [
+                                "get"
+                            ],
+                            "secrets": [
+                                "get"
+                            ],
+                            "certificates": [],
+                            "storage": []
+                        }
+                    }
+                ],
+                "enabledForDeployment": true,
+                "enabledForDiskEncryption": false,
+                "enabledForTemplateDeployment": true
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2016-10-01",
+            "name": "[concat(parameters('vaults_name'), '/RaxConnectionString')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_name'))]"
+            ],
+            "properties": {
+                "contentType": "ConnectionString",
+                "value" : "[parameters('RaxConnectionString')]",
+                "attributes": {
+                    "enabled": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2016-10-01",
+            "name": "[concat(parameters('vaults_name'), '/RaxToken')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_name'))]"
+            ],
+            "properties": {
+                "contentType": "Token",
+                "value" : "[parameters('RaxToken')]",
+                "attributes": {
+                    "enabled": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2016-10-01",
+            "name": "[concat(parameters('vaults_name'), '/RaxWeb')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_name'))]"
+            ],
+            "properties": {
+                "contentType": "URL",
+                "value" : "[parameters('RaxWeb')]",
+                "attributes": {
+                    "enabled": true
+                }
+            }
+        }
+    ]
+}
