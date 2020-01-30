@@ -69,11 +69,12 @@
   },
   "variables": {
     "functionAppName": "[concat(parameters('appName'), uniqueString(resourceGroup().id))]",
-    "ConsumptionName": "[concat('plan-', parameters('appName'))]",
+    "ConsumptionName": "[concat('plan-', uniqueString(resourceGroup().id))]",
     "hostingPlanName": "[variables(concat('Consumption', 'Name'))]",
     "storageAccountName": "[concat('func', uniquestring(resourceGroup().id))]",
-    "hubnamespace": "[concat(parameters('eventhubNamespace'), uniquestring(resourceGroup().id)) ]",
+    "hubnamespace": "[concat(parameters('eventhubNamespace'), uniquestring(resourceGroup().id))]",
     "vaultname": "[concat(parameters('keyvaultName'), uniquestring(resourceGroup().id)) ]",
+    "sightname" : "[concat(parameters('appInsightsName'), uniqueString(resourceGroup().id))]",
     "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
     "githubRepoURL": "https://github.com/villanub/ASCSplunkFunctionV2.git",
     "githubRepoBranch": "master",
@@ -111,7 +112,7 @@
       ]
     },
     {
-      "name": "[parameters('appInsightsName')]",
+      "name": "[variables('sightname')]",
       "type": "Microsoft.Insights/components",
       "apiVersion": "2015-05-01",
       "location": "[parameters('appInsightsLocation')]",
@@ -152,7 +153,7 @@
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
-        "[resourceId('Microsoft.Insights/components', parameters('appInsightsName'))]"
+        "[resourceId('Microsoft.Insights/components', variables('sightname'))]"
       ],
       "identity": {
         "type": "SystemAssigned"
@@ -192,7 +193,7 @@
             },
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
+              "value": "[reference(resourceId('Microsoft.Insights/components', variables('sightname')), '2015-05-01').InstrumentationKey]"
             },
             {
               "name": "hubConnection",
@@ -321,8 +322,8 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "appname": {
-            "value": "[parameters('appName')]"
+          "functionapp": {
+            "value": "[variables('functionAppName')]"
           },
           "MSCLOUD_SPN_ID": {
             "value": "[parameters('MSCLOUD_SPN_ID')]"
@@ -353,7 +354,7 @@
   "outputs": {
     "principalId": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('appName')), '2018-11-01', 'Full').identity.principalId]"
+      "value": "[reference(resourceId('Microsoft.Web/sites', variables('functionAppName')), '2018-11-01', 'Full').identity.principalId]"
     },
     "eventhubprimarykey": {
       "type": "string",
