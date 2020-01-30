@@ -71,6 +71,8 @@
     "ConsumptionName": "[concat('cn-', parameters('appName'))]",
     "hostingPlanName": "[variables(concat('Consumption', 'Name'))]",
     "storageAccountName": "[concat('func', uniquestring(resourceGroup().id))]",
+    "hubnamespace": "[concat(parameters('eventhub_namespace'), uniquestring(resourceGroup().id)) ]",
+    "vaultname": "[concat(parameters('cns_vaults_name'), uniquestring(resourceGroup().id)) ]",
     "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
     "githubRepoURL": "https://github.com/villanub/ASCSplunkFunctionV2.git",
     "githubRepoBranch": "master",
@@ -302,7 +304,7 @@
         },
         "parameters": {
           "eventhub_namespace": {
-            "value": "[parameters('eventhub_namespace')]"
+            "value": "[variables('hubnamespace')]"
           }
         }
       }
@@ -337,7 +339,7 @@
             "value" : "[reference('eventhub').outputs.eventhub.value]"
           },
           "cns_vaults_name": {
-            "value" : "[parameters('cns_vaults_name')]"
+            "value" : "[variables('vaultname')]"
           }
         }
 
