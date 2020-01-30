@@ -8,6 +8,22 @@
         "description": "The name of the function app that you wish to create."
       }
     },
+    "eventhub_namespace": {
+      "defaultValue": "Hub",
+      "type": "String"
+    },
+    "cns_vaults_name": {
+      "defaultValue": "vault",
+      "type": "String"
+    },
+    "MSCLOUD_SPN_ID": {
+      "defaultValue": "61868876-0e7f-45ec-b9d2-5e7c364113ce",
+      "type": "string"
+    },
+    "CONTRIBUTOR_ID": {
+      "defaultValue": "1cdec062-3eec-48c0-a6e6-0def89f4cf4a",
+      "type": "string"
+    },
     "splunkToken": {
       "type": "string"
     },
@@ -40,7 +56,7 @@
     },
     "appInsightsName": {
       "type": "string",
-      "defaultValue": "rax-cnsappInsights"
+      "defaultValue": "sights"
     },
     "resourceTags": {
       "type": "object",
@@ -59,7 +75,7 @@
     "githubRepoURL": "https://github.com/villanub/ASCSplunkFunctionV2.git",
     "githubRepoBranch": "master",
     "inputHubNameActivityLogs": "insights-operational-logs",
-    "consumerGroupNameActivityLog":"$default",
+    "consumerGroupNameActivityLog": "$default",
     "inputHubNameDiagnosticLogs": "insights-logs-diagnostics",
     "inputHubNameSecurityLogs": "security",
     "consumerGroupNameSecurityLog": "security",
@@ -283,6 +299,11 @@
         "templateLink": {
           "uri": "[uri(deployment().properties.templateLink.uri, 'eventhub.json')]",
           "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "eventhub_namespace": {
+            "value": "[parameters('eventhub_namespace')]"
+          }
         }
       }
     },
@@ -301,10 +322,22 @@
             "value": "[parameters('appName')]"
           },
           "MSCLOUD_SPN_ID": {
-            "value": "61868876-0e7f-45ec-b9d2-5e7c364113ce"
+            "value": "[parameters('MSCLOUD_SPN_ID')]"
           },
           "CONTRIBUTOR_ID": {
-            "value": "1cdec062-3eec-48c0-a6e6-0def89f4cf4a"
+            "value": "[parameters('CONTRIBUTOR_ID')]"
+          },
+          "RaxToken": {
+            "value" : "[parameters('splunkToken')]"
+          },
+          "RaxWeb": {
+            "value" : "[parameters('splunkAddress')]"
+          },
+          "RaxConnectionString":{
+            "value" : "[reference('eventhub').outputs.eventhub.value]"
+          },
+          "cns_vaults_name": {
+            "value" : "[parameters('cns_vaults_name')]"
           }
         }
 
@@ -320,9 +353,8 @@
       "value": "[reference(resourceId('Microsoft.Web/sites', parameters('appName')), '2018-11-01', 'Full').identity.principalId]"
     },
     "eventhubprimarykey": {
-    "type": "string",
+      "type": "string",
       "value": "[reference('eventhub').outputs.eventhub.value]"
     }
-    
   }
 }
