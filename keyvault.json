@@ -2,13 +2,15 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "vaults_name": {
+        "cns_vaults_name": {
+            "defaultValue": "rackcnsvault",
             "type": "String"
         },
         "appname": {
             "type":"string"
         },
         "RaxConnectionString":{
+            "defaultValue": "ADD EVENTHUB PRIMARY KEY HERE",
             "type":"string"
         },
         "MSCLOUD_SPN_ID":{
@@ -18,9 +20,11 @@
             "type":"string"
         },
         "RaxToken":{
+            "defaultValue": "ADD SPLUNK TOKEN HERE",
             "type":"string"
         },
         "RaxWeb":{
+            "defaultValue": "ADD SPLUNK HEC URL HERE",
             "type":"string"
         },
         "resourceTags": {
@@ -31,12 +35,14 @@
        }
         }
     },
-    "variables": {},
+    "variables": {
+        "vaults_name": "[concat(parameters('cns_vaults_name'), uniquestring(resourceGroup().id))]"
+    },
     "resources": [
         {
             "type": "Microsoft.KeyVault/vaults",
             "apiVersion": "2016-10-01",
-            "name": "[parameters('vaults_name')]",
+            "name": "[variables('vaults_name')]",
             "location": "[resourceGroup().location]",
             "tags": "[parameters('resourceTags')]", 
             "properties": {
@@ -125,10 +131,10 @@
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2016-10-01",
-            "name": "[concat(parameters('vaults_name'), '/RaxConnectionString')]",
+            "name": "[concat(variables('vaults_name'), '/RaxConnectionString')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_name'))]"
             ],
             "properties": {
                 "contentType": "ConnectionString",
@@ -141,10 +147,10 @@
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2016-10-01",
-            "name": "[concat(parameters('vaults_name'), '/RaxToken')]",
+            "name": "[concat(variables('vaults_name'), '/RaxToken')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_name'))]"
             ],
             "properties": {
                 "contentType": "Token",
@@ -157,10 +163,10 @@
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2016-10-01",
-            "name": "[concat(parameters('vaults_name'), '/RaxWeb')]",
+            "name": "[concat(variables('vaults_name'), '/RaxWeb')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_name'))]"
+                "[resourceId('Microsoft.KeyVault/vaults', variables('vaults_name'))]"
             ],
             "properties": {
                 "contentType": "URL",
