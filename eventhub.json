@@ -15,7 +15,8 @@
         }
     },
     "variables": {
-        "namespace": "[concat(parameters('eventhub_namspace'), uniquestring(resourceGroup().id))]"
+        "namespace": "[concat(parameters('eventhub_namspace'), uniquestring(resourceGroup().id))]",
+        "listenAuthRuleResourceId": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('namespace'), 'RootManageSharedAccessKey')]"
     },
     "resources": [
         {
@@ -169,7 +170,7 @@
     "outputs": {
         "eventhub": {
             "type": "string",
-            "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('namespace'), '/security/Rackspace'),'2017-04-01').primaryConnectionString]"
+            "value": "[listkeys(variables('listenAuthRuleResourceId'), '/security/Rackspace').primaryConnectionString]"
         }
     }
 }
