@@ -8,15 +8,15 @@
         "description": "The name of the function app that you wish to create."
       }
     },
-    "appServicePlanType": {
+    "splunkToken": {
+      "type": "string"
+    },
+    "splunkAddress": {
+      "type": "string"
+    },
+    "splunkCertThumbprint": {
       "type": "string",
-      "defaultValue": "Consumption",
-      "allowedValues": [
-        "Consumption"
-      ],
-      "metadata": {
-        "description": "The Consumption option bills according to https://azure.microsoft.com/en-gb/pricing/details/functions/."
-      }
+      "defaultValue": ""
     },
     "appInsightsLocation": {
       "type": "string",
@@ -42,98 +42,6 @@
       "type": "string",
       "defaultValue": "rax-cnsappInsights"
     },
-    "githubRepoURL": {
-      "type": "string",
-      "defaultValue": "https://github.com/villanub/ASCSplunkFunctionV2.git"
-    },
-    "githubRepoBranch": {
-      "type": "string",
-      "defaultValue": "master"
-    },
-    "eventHubConnectionString": {
-      "type": "string",
-      "defaultValue": "Endpoint=sb://YOURNAMESPACE.servicebus.windows.net/;SharedAccessKeyName=YOURPOLICYNAME;SharedAccessKey=YOURPOLICYKEY"
-    },
-    "inputHubNameActivityLogs": {
-      "type": "string",
-      "defaultValue": "insights-operational-logs"
-    },
-    "consumerGroupNameActivityLog": {
-      "type": "string",
-      "defaultValue": "$default"
-    },
-    "inputHubNameDiagnosticLogs": {
-      "type": "string",
-      "defaultValue": "insights-logs-diagnostics"
-    },
-    "inputHubNameSecurityLogs": {
-      "type": "string",
-      "defaultValue": "security"
-    },
-    "consumerGroupNameSecurityLog": {
-      "type": "string",
-      "defaultValue": "security"
-    },
-    "consumerGroupNameDiagnosticLogs": {
-      "type": "string",
-      "defaultValue": "$default"
-    },
-    "inputHubNameMetrics": {
-      "type": "string",
-      "defaultValue": "insights-metrics-pt1m"
-    },
-    "consumerGroupNameMetrics": {
-      "type": "string",
-      "defaultValue": "$default"
-    },
-    "inputHubNameWAD": {
-      "type": "string",
-      "defaultValue": "insights-telemetry-wad"
-    },
-    "consumerGroupNameWAD": {
-      "type": "string",
-      "defaultValue": "$default"
-    },
-    "inputHubNameLAD": {
-      "defaultValue": "insights-telemetry-lad",
-      "type": "string"
-    },
-    "consumerGroupNameLAD": {
-      "type": "string",
-      "defaultValue": "$default"
-    },
-    "inputHubNameFaults": {
-      "type": "string",
-      "defaultValue": "transmission-faults"
-    },
-    "splunkToken": {
-      "type": "string"
-    },
-    "splunkAddress": {
-      "type": "string"
-    },
-    "splunkCertThumbprint": {
-      "type": "string",
-      "defaultValue": ""
-    },
-    "outputBinding": {
-      "type": "string",
-      "defaultValue": "hec",
-      "metadata": {
-        "description": "values are hec, proxy, eventhub"
-      }
-    },
-    "outputHubConnection": {
-      "type": "string",
-      "defaultValue": "Endpoint=sb://YOURNAMESPACE.servicebus.windows.net/;SharedAccessKeyName=YOURPOLICYNAME;SharedAccessKey=YOURPOLICYKEY",
-      "metadata": {
-        "description": "Only used with outputBinding = eventhub, but must be a valid connection string."
-      }
-    },
-    "output-hub-name-proxy": {
-      "type": "string",
-      "defaultValue": "collector-to-proxy"
-    },
     "resourceTags": {
       "type": "object",
       "defaultValue": {
@@ -145,10 +53,28 @@
   "variables": {
     "functionAppName": "[parameters('appName')]",
     "ConsumptionName": "[concat('cn-', parameters('appName'))]",
-    "hostingPlanName": "[variables(concat(parameters('appServicePlanType'), 'Name'))]",
+    "hostingPlanName": "[variables(concat('Consumption', 'Name'))]",
     "storageAccountName": "[concat('func', uniquestring(resourceGroup().id))]",
-    "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
-
+    "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+    "githubRepoURL": "https://github.com/villanub/ASCSplunkFunctionV2.git",
+    "githubRepoBranch": "master",
+    "inputHubNameActivityLogs": "insights-operational-logs",
+    "consumerGroupNameActivityLog":"$default",
+    "inputHubNameDiagnosticLogs": "insights-logs-diagnostics",
+    "inputHubNameSecurityLogs": "security",
+    "consumerGroupNameSecurityLog": "security",
+    "consumerGroupNameDiagnosticLogs": "$default",
+    "inputHubNameMetrics": "insights-metrics-pt1m",
+    "consumerGroupNameMetrics": "$default",
+    "inputHubNameWAD": "insights-telemetry-wad",
+    "consumerGroupNameWAD": "$default",
+    "inputHubNameLAD": "insights-telemetry-lad",
+    "consumerGroupNameLAD": "$default",
+    "inputHubNameFaults": "transmission-faults",
+    "outputBinding": "hec",
+    "outputHubConnection": "Endpoint=sb://YOURNAMESPACE.servicebus.windows.net/;SharedAccessKeyName=YOURPOLICYNAME;SharedAccessKey=YOURPOLICYKEY",
+    "output-hub-name-proxy": "collector-to-proxy",
+    "appServicePlanType": "Consumption"
   },
   "resources": [
     {
@@ -179,7 +105,7 @@
       }
     },
     {
-      "condition": "[equals(parameters('appServicePlanType'), 'Consumption')]",
+      "condition": "[equals(variables('appServicePlanType'), 'Consumption')]",
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2016-09-01",
       "name": "[variables('ConsumptionName')]",
@@ -251,59 +177,59 @@
             },
             {
               "name": "hubConnection",
-              "value": "[parameters('eventHubConnectionString')]"
+              "value": "[reference('eventhub').outputs.eventhub.value]"
             },
             {
               "name": "input-hub-name-activity-log",
-              "value": "[parameters('inputHubNameActivityLogs')]"
+              "value": "[variables('inputHubNameActivityLogs')]"
             },
             {
               "name": "consumer-group-activity-log",
-              "value": "[parameters('consumerGroupNameActivityLog')]"
+              "value": "[variables('consumerGroupNameActivityLog')]"
             },
             {
               "name": "input-hub-name-diagnostic-logs",
-              "value": "[parameters('inputHubNameDiagnosticLogs')]"
+              "value": "[variables('inputHubNameDiagnosticLogs')]"
             },
             {
               "name": "consumer-group-diagnostic-logs",
-              "value": "[parameters('consumerGroupNameDiagnosticLogs')]"
+              "value": "[variables('consumerGroupNameDiagnosticLogs')]"
             },
             {
               "name": "input-hub-name-metrics",
-              "value": "[parameters('inputHubNameMetrics')]"
+              "value": "[variables('inputHubNameMetrics')]"
             },
             {
               "name": "consumer-group-metrics",
-              "value": "[parameters('consumerGroupNameMetrics')]"
+              "value": "[variables('consumerGroupNameMetrics')]"
             },
             {
               "name": "input-hub-name-wad",
-              "value": "[parameters('inputHubNameWAD')]"
+              "value": "[variables('inputHubNameWAD')]"
             },
             {
               "name": "consumer-group-wad",
-              "value": "[parameters('consumerGroupNameWAD')]"
+              "value": "[variables('consumerGroupNameWAD')]"
             },
             {
               "name": "input-hub-name-lad",
-              "value": "[parameters('inputHubNameLAD')]"
+              "value": "[variables('inputHubNameLAD')]"
             },
             {
               "name": "consumer-group-lad",
-              "value": "[parameters('consumerGroupNameLAD')]"
+              "value": "[variables('consumerGroupNameLAD')]"
             },
             {
               "name": "consumer-group-security-log",
-              "value": "[parameters('consumerGroupNameSecurityLog')]"
+              "value": "[variables('consumerGroupNameSecurityLog')]"
             },
             {
               "name": "input-hub-name-faults",
-              "value": "[parameters('inputHubNameFaults')]"
+              "value": "[variables('inputHubNameFaults')]"
             },
             {
               "name": "input-hub-name-security-log",
-              "value": "[parameters('inputHubNameSecurityLogs')]"
+              "value": "[variables('inputHubNameSecurityLogs')]"
             },
             {
               "name": "splunkToken",
@@ -315,7 +241,7 @@
             },
             {
               "name": "outputBinding",
-              "value": "[parameters('outputBinding')]"
+              "value": "[variables('outputBinding')]"
             },
             {
               "name": "splunkCertThumbprint",
@@ -323,11 +249,11 @@
             },
             {
               "name": "outputHubConnection",
-              "value": "[parameters('outputHubConnection')]"
+              "value": "[variables('outputHubConnection')]"
             },
             {
               "name": "output-hub-name-proxy",
-              "value": "[parameters('output-hub-name-proxy')]"
+              "value": "[variables('output-hub-name-proxy')]"
             }
           ]
         }
@@ -341,8 +267,8 @@
             "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
           ],
           "properties": {
-            "RepoUrl": "[parameters('githubRepoURL')]",
-            "branch": "[parameters('githubRepoBranch')]",
+            "RepoUrl": "[variables('githubRepoURL')]",
+            "branch": "[variables('githubRepoBranch')]",
             "IsManualIntegration": true
           }
         }
@@ -392,6 +318,11 @@
     "principalId": {
       "type": "string",
       "value": "[reference(resourceId('Microsoft.Web/sites', parameters('appName')), '2018-11-01', 'Full').identity.principalId]"
+    },
+    "eventhubprimarykey": {
+    "type": "string",
+      "value": "[reference('eventhub').outputs.eventhub.value]"
     }
+    
   }
 }

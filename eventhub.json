@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "eventhub_namspace": {
-            "defaultValue": "RackCNSEventHub",
+            "defaultValue": "CNSEvHub",
             "type": "String"
         },
         "resourceTags": {
@@ -15,12 +15,13 @@
         }
     },
     "variables": {
+        "namespace": "[concat(parameters('eventhub_namspace'), uniquestring(resourceGroup().id))]"
     },
     "resources": [
         {
             "type": "Microsoft.EventHub/namespaces",
             "apiVersion": "2018-01-01-preview",
-            "name": "[parameters('eventhub_namspace')]",
+            "name": "[variables('namespace')]",
             "location": "[resourceGroup().location]",
             "tags": "[parameters('resourceTags')]",
             "sku": {
@@ -38,10 +39,10 @@
         {
             "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
             "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('eventhub_namspace'), '/RootManageSharedAccessKey')]",
+            "name": "[concat(variables('namespace'), '/RootManageSharedAccessKey')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
+                "[resourceId('Microsoft.EventHub/namespaces', variables('namespace'))]"
             ],
             "properties": {
                 "rights": [
@@ -54,10 +55,10 @@
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs",
             "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('eventhub_namspace'), '/security')]",
+            "name": "[concat(variables('namespace'), '/security')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
+                "[resourceId('Microsoft.EventHub/namespaces', variables('namespace'))]"
             ],
             "properties": {
                 "messageRetentionInDays": 7,
@@ -68,10 +69,10 @@
         {
             "type": "Microsoft.EventHub/namespaces/networkRuleSets",
             "apiVersion": "2018-01-01-preview",
-            "name": "[concat(parameters('eventhub_namspace'), '/default')]",
+            "name": "[concat(variables('namespace'), '/default')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
+                "[resourceId('Microsoft.EventHub/namespaces', variables('namespace'))]"
             ],
             "properties": {
                 "defaultAction": "Deny",
@@ -84,11 +85,11 @@
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
             "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('eventhub_namspace'), '/security/ASC')]",
+            "name": "[concat(variables('namespace'), '/security/ASC')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventhub_namspace'), 'security')]",
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('namespace'), 'security')]",
+                "[resourceId('Microsoft.EventHub/namespaces', variables('namespace'))]"
             ],
             "properties": {
                 "rights": [
@@ -101,11 +102,11 @@
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
             "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('eventhub_namspace'), '/security/PreviewDataPolicy')]",
+            "name": "[concat(variables('namespace'), '/security/PreviewDataPolicy')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventhub_namspace'), 'security')]",
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('namespace'), 'security')]",
+                "[resourceId('Microsoft.EventHub/namespaces', variables('namespace'))]"
             ],
             "properties": {
                 "rights": [
@@ -116,11 +117,11 @@
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
             "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('eventhub_namspace'), '/security/Rackspace')]",
+            "name": "[concat(variables('namespace'), '/security/Rackspace')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventhub_namspace'), 'security')]",
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('namespace'), 'security')]",
+                "[resourceId('Microsoft.EventHub/namespaces', variables('namespace'))]"
             ],
             "properties": {
                 "rights": [
@@ -131,11 +132,11 @@
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
             "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('eventhub_namspace'), '/security/$Default')]",
+            "name": "[concat(variables('namespace'), '/security/$Default')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventhub_namspace'), 'security')]",
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('namespace'), 'security')]",
+                "[resourceId('Microsoft.EventHub/namespaces', variables('namespace'))]"
             ],
             "properties": {
             }
@@ -143,11 +144,11 @@
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
             "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('eventhub_namspace'), '/security/preview_data_consumer_group')]",
+            "name": "[concat(variables('namespace'), '/security/preview_data_consumer_group')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventhub_namspace'), 'security')]",
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('namespace'), 'security')]",
+                "[resourceId('Microsoft.EventHub/namespaces', variables('namespace'))]"
             ],
             "properties": {
             }
@@ -155,14 +156,20 @@
         {
             "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
             "apiVersion": "2017-04-01",
-            "name": "[concat(parameters('eventhub_namspace'), '/security/security')]",
+            "name": "[concat(variables('namespace'), '/security/security')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventhub_namspace'), 'security')]",
-                "[resourceId('Microsoft.EventHub/namespaces', parameters('eventhub_namspace'))]"
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', variables('namespace'), 'security')]",
+                "[resourceId('Microsoft.EventHub/namespaces', variables('namespace'))]"
             ],
             "properties": {
             }
         }
-    ]
+    ],
+    "outputs": {
+        "eventhub": {
+            "type": "string",
+            "value": "[listkeys(resourceId('Microsoft.Eventhub/namespaces/authorizationRules',variables('namespace'),'security','Rackspace'),'2017-04-01').primaryConnectionString]"
+        }
+    }
 }
