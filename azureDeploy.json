@@ -161,9 +161,8 @@
                 "name": "Standard_LRS"
             },
             "dependsOn": [
-                "eventhub",
-                "keyvault"
-            ]
+                "eventhub"
+              ]
         },
         {
             "name": "[parameters('appInsightsName')]",
@@ -370,7 +369,7 @@
             "uri": "[uri(deployment().properties.templateLink.uri, 'keyvault.json')]",
             "contentVersion": "1.0.0.0"
                   },
-                "parameters":{
+            "parameters":{
                   "appname":{
                       "value": "[parameters('appName')]"
                   },
@@ -381,7 +380,11 @@
                     "value": "1cdec062-3eec-48c0-a6e6-0def89f4cf4a"
                   }
                 }
-              }
+  
+              },
+                "dependsOn": [
+                "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
+              ]
         }
     ],
         "outputs": {
