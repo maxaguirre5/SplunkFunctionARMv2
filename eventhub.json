@@ -169,7 +169,7 @@
     "outputs": {
         "eventhub": {
             "type": "string",
-            "value": "[listkeys(resourceId('Microsoft.Eventhub/namespaces/authorizationRules',variables('namespace'),'security','Rackspace'),'2017-04-01').primaryConnectionString]"
+            "value": "[listkeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', variables('namespace'), '/security/Rackspace'),'2017-04-01').primaryConnectionString]"
         }
     }
 }
