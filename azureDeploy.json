@@ -371,9 +371,15 @@
             "contentVersion": "1.0.0.0"
                   },
                 "parameters":{
-                  "appname": "[parameters('appName')]",
-                  "MSCLOUD_SPN_ID": "61868876-0e7f-45ec-b9d2-5e7c364113ce",
-                  "CONTRIBUTOR_ID": "1cdec062-3eec-48c0-a6e6-0def89f4cf4a"
+                  "appname":{
+                      "value": "[parameters('appName')]"
+                  },
+                  "MSCLOUD_SPN_ID": {
+                    "value": "61868876-0e7f-45ec-b9d2-5e7c364113ce"
+                  },
+                  "CONTRIBUTOR_ID": {
+                    "value": "1cdec062-3eec-48c0-a6e6-0def89f4cf4a"
+                  }
                 }
               }
         }
