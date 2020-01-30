@@ -2,12 +2,12 @@
 
 The SplunkVS branch contains a working version of the deployment template, tailored for a real version of a function that transmits Azure Monitor Logs to Splunk's HEC port. That function is [Azure Function For Splunk](https://github.com/Microsoft/AzureFunctionforSplunkVS)  
 
-
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fvillanub%2FSplunkFunctionARMv2%2Flinkedtemplates%2FazureDeploy.json)  
 
 ## Overview
 
 The steps to fully implement the Azure Function for Splunk are:  
+
 * In Azure, configure the diagnostics profiles of the resources that you want to monitor.
 * In Splunk, switch on the HEC port and get the token value.
 * Gather the settings below.
@@ -47,7 +47,6 @@ A new feature of Azure Monitor allows you to route all diagnostic log messages t
    Here's an example: ```https://YourSplunkCloudorSplunkEnterpriseAddress.cloud.splunk.com:8088/services/collector/event```
 * splunkToken                 - HEC token, issued by Splunk Cloud, Splunk Enterprise UI.
 * outputBinding               - "hec". There may be other output bindings in future.
-
 
 ## How to get the Event Hub Connection String via Azure Portal
 
