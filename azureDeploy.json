@@ -173,9 +173,15 @@
             "location": "[resourceGroup().location]",
             "properties": {
                 "name": "[variables('ConsumptionName')]",
-                "computeMode": "Dynamic",
-                "sku": "Dynamic"
-            }
+                "computeMode": "Dynamic"
+                },
+             "sku": {
+             "name": "Y1",
+             "tier": "Dynamic",
+             "size": "Y1",
+             "family": "Y",
+             "capacity": 0
+      }
         },
         {
             "apiVersion": "2016-08-01",
